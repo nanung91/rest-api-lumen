@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
+use App\Models\User;
+use App\Repositories\UserRepositoryEloquent;
 
 class AuthController extends Controller
 {
@@ -13,17 +19,18 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','register']]);
     }
+
     //register a new account
-    public function Register(Request $data){
-        $register=User::create([
-            'name' =>$request['name'],
-            'email' =>$request['email'],
-            'password' =>hash($request['password'])
-        ]);
-        return response()->json([
-            'message'=>'user registered!'
+    public function register(RegisterRequest $request){
+        $name=$request['name'];
+        $email=$request['email'];
+        $password=Hash::make($request['password']);
+        return User::create([
+            'name'=>$name,
+            'email'=>$email,
+            'password'=>$password,
         ]);
     }
 
@@ -32,14 +39,18 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
-    {
-        $credentials = request(['email', 'password']);
+    public function login(LoginRequest $request)
+    // public function login()
+    {   
+        $email=$request['email'];
+        $password=$request['password'];
+        // $credentials = request(['email', 'password']);
+        // $token = auth()->attempt(['email'=>$email, 'password'=>$password]);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt(['email'=>$email, 'password'=>$password])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
+        // $this->guard()->setToken($token = auth()->attempt($credentials));
         return $this->respondWithToken($token);
     }
 

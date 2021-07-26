@@ -19,15 +19,16 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-// $router->post('/register','AuthController@Register');
+// Route::post('/register','AuthController@Register');
 // $router->post('/login','AuthController@login');
 Route::group([
 
-    'middleware' => 'api',
+    // 'middleware' => 'api',
     'prefix' => 'auth'
 
 ], function ($router) {
 
+    Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
