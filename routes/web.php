@@ -1,8 +1,8 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Route;
+// use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +32,8 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    $router->get('me', 'AuthController@me');
+    $router->get('posts', 'PostController@Posts');
+    $router->post('posts/create', 'PostController@Create');
 
 });
